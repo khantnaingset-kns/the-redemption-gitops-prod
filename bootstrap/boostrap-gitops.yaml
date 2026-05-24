@@ -7,7 +7,7 @@ spec:
   description: Bootstrap project for managing Argo CD root configuration
 
   sourceRepos:
-    - https://github.com/YOUR_ORG/accor-redemption-gitops.git
+    - https://github.com/khantnaingset-kns/the-redemption-gitops-prod.git
 
   destinations:
     - namespace: argocd
@@ -36,7 +36,7 @@ spec:
   project: bootstrap
 
   source:
-    repoURL: https://github.com/YOUR_ORG/accor-redemption-gitops.git
+    repoURL: https://github.com/khantnaingset-kns/the-redemption-gitops-prod.git
     targetRevision: main
     path: argocd
 
