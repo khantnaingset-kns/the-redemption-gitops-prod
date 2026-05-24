@@ -1,0 +1,40 @@
+# Secrets — never commit these
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+secrets.yaml
+secrets.yml
+*-secret.yaml
+*-secret.yml
+secret-*.yaml
+secret-*.yml
+
+# Sealed secrets source files (unencrypted originals)
+*.unsealed.yaml
+
+# Helm
+charts/
+*.tgz
+
+# ArgoCD generated / local override files
+/local/
+*.local.yaml
+*.local.yml
+override-*.yaml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temp / scratch
+tmp/
+scratch/
+*.tmp
