@@ -43,6 +43,8 @@ affinity:
 serviceAccount:
   create: true
   name: external-secrets-sa
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::837411785224:role/external-secrets-operator-role
 
 webhook:
   port: 9443
