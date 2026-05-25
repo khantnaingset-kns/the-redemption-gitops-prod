@@ -1,9 +1,9 @@
 replicaCount: 2
 
 image:
-  repository: the-redemption-api
+  repository: khantki/the-redemption-api
   pullPolicy: IfNotPresent
-  tag: ""
+  tag: "0.0.1"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -57,12 +57,12 @@ externalSecret:
     name: the-redemption-secrets
     kind: ClusterSecretStore
   target:
-    name: ""
+    name: "rds!db-3aced137-9445-4dcf-931a-5fad9c27a5d5"
     creationPolicy: Owner
   data:
     - secretKey: DB_PASSWORD
       remoteRef:
-        key: the-redemption/api
+        key: password
         property: DB_PASSWORD
   dataFrom: []
 
