@@ -1,0 +1,294 @@
+prometheus:
+  enabled: true
+  serviceAccount:
+    create: true
+    name: "prometheus"
+    annotations: {}
+    automountServiceAccountToken: true
+
+  podDisruptionBudget:
+    enabled: true
+    minAvailable: 1
+    unhealthyPodEvictionPolicy: AlwaysAllow
+
+  service:
+    enabled: true
+    type: ClusterIP
+    port: 9090
+    targetPort: 9090
+
+  serviceMonitor:
+    selfMonitor: true
+    interval: "30s"
+
+  prometheusSpec:
+    tolerations:
+      - key: "node.cilium.io/agent-not-ready"
+        operator: "Equal"
+        value: "true"
+        effect: "NoExecute"
+
+    serviceMonitorNamespaceSelector: {}
+
+    replicas: 1
+    retention: 14d
+    maximumStartupDurationSeconds: 3600
+
+    scrapeInterval: 30s
+    scrapeTimeout: 10s
+    evaluationInterval: 30s
+
+    logLevel: info
+    logFormat: logfmt
+
+    securityContext:
+      runAsGroup: 2000
+      runAsNonRoot: true
+      runAsUser: 1000
+      fsGroup: 2000
+      seccompProfile:
+        type: RuntimeDefault
+
+    resources:
+      requests:
+        memory: 1Gi
+        cpu: 1
+      limits:
+        memory: 1.5Gi
+
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 30Gi
+
+    additionalPrometheusRules:
+      - name: disable-default-kube-rules
+        groups:
+          - name: kube-scheduler.rules
+            rules: []
+          - name: kube-controller-manager.rules
+            rules: []
+          - name: kubernetes-system-controller-manager
+            rules: []
+          - name: kubernetes-system-scheduler
+            rules: []
+
+    additionalScrapeConfigs:
+      - job_name: 'prometheus-node-exporter'
+        kubernetes_sd_configs:
+          - role: pod
+            namespaces:
+              names:
+                - monitoring
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
+            action: keep
+            regex: prometheus-node-exporter
+          - source_labels: [__meta_kubernetes_pod_ip]
+            action: replace
+            target_label: __address__
+            regex: (.+)
+            replacement: $1:9100
+
+      - job_name: 'kube-state-metrics'
+        kubernetes_sd_configs:
+          - role: pod
+            namespaces:
+              names:
+                - monitoring
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
+            action: keep
+            regex: kube-state-metrics
+          - source_labels: [__meta_kubernetes_pod_ip]
+            action: replace
+            target_label: __address__
+            regex: (.+)
+            replacement: $1:8080
+
+    alertmanagers:
+      - name: prometheus-stack-kube-prom-alertmanager
+        namespace: monitoring
+        port: http-web
+
+alertmanager:
+  enabled: true
+  configMapOverrideName: ""
+  secretOverrideName: ""
+
+  podDisruptionBudget:
+    enabled: true
+    minAvailable: 1
+    unhealthyPodEvictionPolicy: AlwaysAllow
+
+    route:
+      group_by:
+        - alertname
+      group_interval: 5m
+      group_wait: 30s
+      receiver: low_priority_receiver
+      repeat_interval: 1h
+      routes:
+        - match:
+            severity: critical
+          receiver: high_priority_receiver
+          repeat_interval: 5m
+        - match:
+            severity: warning
+          receiver: low_priority_receiver
+    inhibit_rules:
+      - source_match:
+          alertname: KubeControllerManagerDown
+        target_match:
+          alertname: KubeControllerManagerDown
+        equal:
+          - severity
+      - source_match:
+          alertname: KubeSchedulerDown
+        target_match:
+          alertname: KubeSchedulerDown
+        equal:
+          - severity
+
+  alertmanagerSpec:
+    volumes:
+      - name: smtp-secret
+        secret:
+          secretName: smtp-secret
+          defaultMode: 0400
+          items:
+            - key: smtp-password
+              path: smtp-password
+
+    volumeMounts:
+      - name: smtp-secret
+        mountPath: /etc/alertmanager-secrets
+        readOnly: true
+
+rbac:
+  create: true
+  additionalClusterRoleRules:
+    - apiGroups: [""]
+      resources: ["nodes", "nodes/metrics", "services", "endpoints", "pods"]
+      verbs: ["get", "list", "watch"]
+    - apiGroups: ["metrics.k8s.io"]
+      resources: ["nodes", "pods"]
+      verbs: ["get", "list", "watch"]
+    - apiGroups: ["monitoring.coreos.com"]
+      resources: ["servicemonitors"]
+      verbs: ["get", "list", "watch"]
+    - apiGroups: [""]
+      resources: ["configmaps"]
+      verbs: ["get"]
+    - nonResourceURLs: ["/metrics", "/apis/metrics.k8s.io"]
+      verbs: ["get"]
+
+kubeStateMetrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+
+prometheus-node-exporter:
+  enabled: true
+  podLabels:
+    app.kubernetes.io/name: prometheus-node-exporter
+    app.kubernetes.io/part-of: prometheus-node-exporter
+    release: kube-prometheus-stack
+  service:
+    enabled: true
+    port: 9100
+    targetPort: 9100
+    selector:
+      app.kubernetes.io/name: prometheus-node-exporter
+    labels:
+      app.kubernetes.io/name: node-exporter
+      release: kube-prometheus-stack
+  serviceMonitor:
+    enabled: false
+    additionalLabels:
+      release: kube-prometheus-stack
+    scheme: https
+    tlsConfig:
+      insecureSkipVerify: true
+      caFile: /etc/prometheus/certs/ca.crt
+    bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+
+kubelet:
+  enabled: true
+  serviceMonitor:
+    https: true
+    metricRelabelings:
+      - action: keep
+        regex: (kubelet_|kube_scheduler_|kube_controller_manager_|kube_apiserver_)
+        sourceLabels: [__name__]
+    scheme: https
+    tlsConfig:
+      insecureSkipVerify: true
+      caFile: /etc/prometheus/certs/ca.crt
+    bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+
+podMonitorSelector:
+  matchLabels:
+    release: kube-prometheus-stack
+
+serviceMonitor:
+  enabled: true
+  additionalLabels:
+    release: kube-prometheus-stack
+  scheme: https
+  tlsConfig:
+    insecureSkipVerify: true
+    caFile: /etc/prometheus/certs/ca.crt
+  bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+
+grafana:
+  enabled: true
+  replicas: 1
+
+  adminPassword: ""
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 472
+    runAsGroup: 472
+    fsGroup: 472
+
+  persistence:
+    enabled: true
+    size: 10Gi
+
+  service:
+    type: ClusterIP
+    port: 80
+
+  serviceMonitor:
+    enabled: true
+
+  sidecar:
+    datasources:
+      enabled: true
+      defaultDatasourceEnabled: true
+    dashboards:
+      enabled: true
+
+  grafana.ini:
+    server:
+      domain: grafana.prod-the-redemption.local
+      root_url: "%(protocol)s://%(domain)s/"
+
+kubeScheduler:
+  enabled: false
+
+kubeControllerManager:
+  enabled: false

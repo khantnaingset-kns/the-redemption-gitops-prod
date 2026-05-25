@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: fargate-log
+  namespace: argocd
+spec:
+  project: infrastructure
+  sources:
+    - repoURL: https://github.com/khantnaingset-kns/the-redemption-gitops-prod.git
+      targetRevision: main
+      path: infrastructure/fargate-log
+      ref: argocd_values
+
+    - repoURL: https://github.com/khantnaingset-kns/the-redemption-helm-charts
+      targetRevision: main
+      path: fargate-log
+      helm:
+        valueFiles:
+          - $argocd_values/infrastructure/fargate-log/values.yaml
+
+  destination:
+    namespace: aws-observability
+    name: in-cluster
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

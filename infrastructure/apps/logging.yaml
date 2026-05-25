@@ -1,0 +1,43 @@
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: logging-stack
+  namespace: argocd
+spec:
+  ignoreDifferences:
+  - group: apps
+    kind: Deployment
+    jsonPointers:
+    - /status/terminatingReplicas
+  project: infrastructure
+  sources:
+    - repoURL: https://github.com/khantnaingset-kns/the-redemption-gitops-prod.git
+      targetRevision: main
+      ref: argocd_values
+    - chart: logging-operator
+      repoURL: ghcr.io/kube-logging/helm-charts
+      targetRevision: 5.2.0
+      helm:
+        valueFiles:
+          - $argocd_values/infrastructure/logging/values.yml
+    - chart: loki
+      repoURL: https://grafana.github.io/helm-charts
+      targetRevision: 6.29.0
+      helm:
+        valueFiles:
+          - $argocd_values/infrastructure/logging/values.yml
+    - repoURL: "https://github.com/khantnaingset-kns/the-redemption-gitops-prod.git"
+      targetRevision: main
+      path: infrastructure/logging/manifests
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: o11y
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - Validate=false
+      - CreateNamespace=true
+      - ServerSideApply=true

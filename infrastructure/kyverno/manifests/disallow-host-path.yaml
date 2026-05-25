@@ -1,0 +1,28 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: disallow-host-path
+  annotations:
+    policies.kyverno.io/title: Disallow Host Path
+    policies.kyverno.io/category: Pod Security
+    policies.kyverno.io/severity: high
+    policies.kyverno.io/description: >-
+      Prevents pods from mounting hostPath volumes. HostPath volumes allow
+      containers to access files and directories on the host filesystem,
+      which can lead to data exfiltration or host compromise.
+spec:
+  validationFailureAction: Enforce
+  background: true
+  rules:
+    - name: validate-host-path
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      validate:
+        message: "HostPath volumes are not allowed."
+        pattern:
+          spec:
+            =(volumes):
+              - X(hostPath): "null"

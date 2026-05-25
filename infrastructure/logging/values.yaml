@@ -1,0 +1,284 @@
+---
+loki:
+  auth_enabled: false
+  commonConfig:
+    path_prefix: /var/loki
+    replication_factor: 1
+  server:
+    grpc_server_max_recv_msg_size: 104857600
+    grpc_server_max_send_msg_size: 104857600
+  schemaConfig:
+    configs:
+      - from: 2024-04-01
+        store: tsdb
+        object_store: s3
+        schema: v13
+        index:
+          prefix: loki_index_
+          period: 24h
+  storage_config:
+    tsdb_shipper:
+      active_index_directory: /var/loki/tsdb/index
+      cache_location: /var/loki//tsdb/index_cache
+    aws:
+      s3: ""
+  compactor:
+    working_directory: /var/loki/compactor
+    compaction_interval: 10m
+    retention_enabled: true
+    retention_delete_delay: 2h
+    retention_delete_worker_count: 150
+    delete_request_store: s3
+  limits_config:
+    retention_period: 744h
+    max_label_names_per_series: 50
+    query_timeout: 5m
+    ingestion_rate_mb: 2000
+    ingestion_burst_size_mb: 2000
+    max_line_size: 0
+    per_stream_rate_limit: 2000MB
+    per_stream_rate_limit_burst: 2000MB
+  storage:
+    bucketNames:
+      chunks: ""
+      ruler: ""
+      admin: ""
+    type: s3
+    s3:
+      s3: ""
+      region: us-east-1
+      insecure: false
+      endpoint: null
+      secretAccessKey: null
+      accessKeyId: null
+  ingester:
+    chunk_encoding: snappy
+    max_chunk_age: 48h
+  tracing:
+    enabled: true
+  querier:
+    # Default is 4, if you have enough memory and CPU you can increase, reduce if OOMing
+    max_concurrent: 6
+  extraMemberlistConfig:
+    bind_addr:
+      - ${MY_POD_IP}
+
+gateway:
+  replicas: 1
+  nginxConfig:
+    clientMaxBodySize: 500M
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 101
+    capabilities:
+      drop:
+        - ALL
+    allowPrivilegeEscalation: false
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  fsGroup: 1000
+
+deploymentMode: Distributed
+
+# backend:
+#   replicas: 3
+#   extraArgs:
+#     - -config.expand-env=true
+
+#   extraEnv:
+#     - name: MY_POD_IP
+#       valueFrom:
+#         fieldRef:
+#           fieldPath: status.podIP
+# read:
+#   nodeSelector:
+#     nodeGroupType: private-workloads
+#   replicas: 3
+  # extraArgs:
+  #   - -config.expand-env=true
+
+  # extraEnv:
+  #   - name: MY_POD_IP
+  #     valueFrom:
+  #       fieldRef:
+  #         fieldPath: status.podIP
+# write:
+#   nodeSelector:
+#     nodeGroupType: private-workloads
+#   replicas: 3
+#   extraArgs:
+#     - -config.expand-env=true
+
+#   extraEnv:
+#     - name: MY_POD_IP
+#       valueFrom:
+#         fieldRef:
+#           fieldPath: status.podIP
+
+backend:
+  replicas: 0
+read:
+  replicas: 0
+write:
+  replicas: 0
+
+# Enable minio for storage
+minio:
+  enabled: false
+
+# Zero out replica counts of other deployment modes
+singleBinary:
+  replicas: 0
+
+test:
+  enabled: false
+
+lokiCanary:
+  enabled: false
+
+ingester:
+  replicas: 1
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  zoneAwareReplication:
+    enabled: false
+  extraArgs:
+    - -config.expand-env=true
+  extraEnv:
+    - name: MY_POD_IP
+      valueFrom:
+        fieldRef:
+          fieldPath: status.podIP
+
+querier:
+  replicas: 1
+  maxUnavailable: 1
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  extraArgs:
+    - -config.expand-env=true
+  extraEnv:
+    - name: MY_POD_IP
+      valueFrom:
+        fieldRef:
+          fieldPath: status.podIP
+
+queryFrontend:
+  replicas: 1
+  maxUnavailable: 1
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+  extraArgs:
+    - -config.expand-env=true
+  extraEnv:
+    - name: MY_POD_IP
+      valueFrom:
+        fieldRef:
+          fieldPath: status.podIP
+
+queryScheduler:
+  replicas: 1
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+  extraArgs:
+    - -config.expand-env=true
+  extraEnv:
+    - name: MY_POD_IP
+      valueFrom:
+        fieldRef:
+          fieldPath: status.podIP
+
+distributor:
+  replicas: 1
+  maxUnavailable: 1
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  extraArgs:
+    - -config.expand-env=true
+  extraEnv:
+    - name: MY_POD_IP
+      valueFrom:
+        fieldRef:
+          fieldPath: status.podIP
+
+compactor:
+  replicas: 1
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  extraArgs:
+    - -config.expand-env=true
+  extraEnv:
+    - name: MY_POD_IP
+      valueFrom:
+        fieldRef:
+          fieldPath: status.podIP
+
+indexGateway:
+  replicas: 1
+  maxUnavailable: 1
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  extraArgs:
+    - -config.expand-env=true
+  extraEnv:
+    - name: MY_POD_IP
+      valueFrom:
+        fieldRef:
+          fieldPath: status.podIP
+
+memcached:
+  enabled: false
+chunksCache:
+  allocatedMemory: 1000
+resultsCache:
+  allocatedMemory: 1000
+
+serviceAccount:
+  create: true
+  annotations:
+    eks.amazonaws.com/role-arn: ""
+  name: loki-sa

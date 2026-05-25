@@ -1,0 +1,43 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kyverno
+  namespace: argocd
+spec:
+  project: infrastructure
+  sources:
+    - repoURL: https://github.com/khantnaingset-kns/the-redemption-gitops-prod.git
+      targetRevision: main
+      path: infrastructure/kyverno
+      ref: argocd_values
+
+    - repoURL: https://kyverno.github.io/kyverno/
+      chart: kyverno
+      targetRevision: 3.4.3
+      helm:
+        valueFiles:
+          - $argocd_values/infrastructure/kyverno/values.yaml
+
+    - repoURL: https://github.com/khantnaingset-kns/the-redemption-gitops-prod.git
+      targetRevision: main
+      path: infrastructure/kyverno/manifests
+
+  destination:
+    namespace: kyverno
+    name: in-cluster
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+  ignoreDifferences:
+    - group: admissionregistration.k8s.io
+      kind: ValidatingWebhookConfiguration
+      jsonPointers:
+        - /webhooks/0/clientConfig/caBundle
+        - /webhooks/1/clientConfig/caBundle
+    - group: admissionregistration.k8s.io
+      kind: MutatingWebhookConfiguration
+      jsonPointers:
+        - /webhooks/0/clientConfig/caBundle

@@ -1,0 +1,58 @@
+policies:
+  - name: allow-kube-dns
+    description: "Allow all pods to access CoreDNS for DNS resolution"
+    endpointSelector: {}
+    egress:
+      - toEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: kube-system
+              k8s-app: kube-dns
+        toPorts:
+          - ports:
+              - port: "53"
+                protocol: UDP
+              - port: "53"
+                protocol: TCP
+
+  - name: allow-apiserver-egress
+    description: "Allow all pods to reach the Kubernetes API server"
+    endpointSelector: {}
+    egress:
+      - toEntities:
+          - kube-apiserver
+        toPorts:
+          - ports:
+              - port: "443"
+
+  - name: allow-world-egress
+    description: "Allow all pods egress to the internet"
+    endpointSelector: {}
+    egress:
+      - toEntities:
+          - world
+
+  - name: allow-ingress-to-redemption-api
+    description: "Allow ingress traffic from Cilium Ingress to the redemption API"
+    endpointSelector:
+      matchLabels:
+        app.kubernetes.io/name: the-redemption-api
+    ingress:
+      - fromEntities:
+          - ingress
+
+  - name: allow-monitoring-scrape
+    description: "Allow Prometheus from o11y namespace to scrape all pods"
+    endpointSelector: {}
+    ingress:
+      - fromEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: o11y
+
+  - name: allow-health-checks
+    description: "Allow health checks from kubelet/health-check entities"
+    endpointSelector: {}
+    ingress:
+      - fromEntities:
+          - health
+          - remote-node
+          - init

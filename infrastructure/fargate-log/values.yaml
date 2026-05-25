@@ -1,0 +1,10 @@
+namespace:
+  name: aws-observability
+
+aws:
+  region: us-east-1
+  logGroupName: /aws/eks/prod-the-redemption/fargate-logs
+  logRetentionDays: 3
+
+nameOverride: ""
+fullnameOverride: ""

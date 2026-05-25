@@ -1,0 +1,33 @@
+clusterName: prod-the-redemption
+autoDiscoverAwsVpcID: true
+
+image:
+  tag: v2.12.0
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  fsGroup: 1000
+
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  capabilities:
+    drop:
+      - ALL
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+
+serviceAccount:
+  create: true
+  name: aws-load-balancer-controller-sa
+  annotations:
+    eks.amazonaws.com/role-arn: ""
