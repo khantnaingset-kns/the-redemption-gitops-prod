@@ -1,0 +1,88 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: azure-outage-alerts
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+    - name: azure-infrastructure-outages
+      rules:
+        - alert: HighNodeFailureRate
+          expr: |
+            count(kube_node_status_condition{condition="Ready", status="true"})
+              /
+            count(kube_node_status_condition{condition="Ready"})
+            < 0.5
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: >-
+              More than 50% of cluster nodes are NotReady.
+            description: >-
+              Only {{ $value | humanizePercentage }} of nodes are in Ready state.
+              This may indicate an Azure infrastructure outage.
+
+        - alert: PersistentVolumeInFailedPhase
+          expr: |
+            kube_persistentvolume_status_phase{phase="Failed"} > 0
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: >-
+              PersistentVolume has entered Failed phase.
+            description: >-
+              PV {{ $labels.persistentvolume }} is in Failed phase.
+              Azure Disk/Disk provisioning may have failed.
+
+        - alert: PersistentVolumeClaimStuckPending
+          expr: |
+            kube_persistentvolumeclaim_status_phase{phase="Pending"} > 0
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: >-
+              PVC stuck in Pending state.
+            description: >-
+              PVC {{ $labels.namespace }}/{{ $labels.persistentvolumeclaim }}
+              has been pending for over 15 minutes.
+              Possible Azure storage provisioning issue.
+
+        - alert: KubeApiServerLatencyHigh
+          expr: |
+            histogram_quantile(0.99,
+              sum(rate(apiserver_request_duration_seconds_bucket{
+                verb!~"WATCH|WATCHLIST|CONNECT"
+              }[5m])) by (le, verb)
+            ) > 1
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: >-
+              Kubernetes API server has high latency.
+            description: >-
+              API server 99th percentile latency for verb {{ $labels.verb }}
+              is {{ $value | humanizeDuration }}.
+              This may indicate Azure control plane issues.
+
+        - alert: KubeApiServerErrorRateHigh
+          expr: |
+            sum(rate(apiserver_request_total{
+              code=~"5.."
+            }[5m])) by (verb)
+              /
+            sum(rate(apiserver_request_total[5m])) by (verb)
+            > 0.05
+          for: 10m
+          labels:
+            severity: critical
+          annotations:
+            summary: >-
+              Kubernetes API server has high 5xx error rate.
+            description: >-
+              API server has returned {{ $value | humanizePercentage }} 5xx errors
+              for verb {{ $labels.verb }} over the last 5 minutes.

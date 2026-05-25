@@ -1,0 +1,122 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: bad-deployment-alerts
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+    - name: bad-deployments
+      rules:
+        - alert: DeploymentUnavailableReplicas
+          expr: |
+            kube_deployment_status_replicas_unavailable > 0
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: >-
+              Deployment has unavailable replicas.
+            description: >-
+              Deployment {{ $labels.namespace }}/{{ $labels.deployment }}
+              has {{ $value }} unavailable replica(s) for over 10 minutes.
+
+        - alert: DeploymentRolloutStuck
+          expr: |
+            kube_deployment_status_condition{
+              condition="Progressing",
+              status="false"
+            } == 1
+          for: 10m
+          labels:
+            severity: critical
+          annotations:
+            summary: >-
+              Deployment rollout is stuck.
+            description: >-
+              Deployment {{ $labels.namespace }}/{{ $labels.deployment }}
+              rollout has been stuck for over 10 minutes.
+
+        - alert: StatefulSetUnavailableReplicas
+          expr: |
+            kube_statefulset_replicas
+              -
+            kube_statefulset_status_replicas_ready
+            > 0
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: >-
+              StatefulSet has unavailable replicas.
+            description: >-
+              StatefulSet {{ $labels.namespace }}/{{ $labels.statefulset }}
+              has {{ $value }} replica(s) not ready.
+
+        - alert: DaemonSetNotScheduled
+          expr: |
+            kube_daemonset_status_desired_number_scheduled
+              -
+            kube_daemonset_status_current_number_scheduled
+            > 0
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: >-
+              DaemonSet has unscheduled pods.
+            description: >-
+              DaemonSet {{ $labels.namespace }}/{{ $labels.daemonset }}
+              has {{ $value }} pod(s) not scheduled.
+
+        - alert: PodNotReady
+          expr: |
+            kube_pod_status_ready{condition="false"} == 1
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: >-
+              Pod is not ready.
+            description: >-
+              Pod {{ $labels.namespace }}/{{ $labels.pod }}
+              has not been ready for 10 minutes.
+
+        - alert: PodCrashLooping
+          expr: |
+            rate(kube_pod_container_status_restarts_total[15m]) * 900 > 5
+          labels:
+            severity: warning
+          annotations:
+            summary: >-
+              Pod is crash looping.
+            description: >-
+              Pod {{ $labels.namespace }}/{{ $labels.pod }}
+              container {{ $labels.container }}
+              has restarted {{ $value | printf "%.0f" }} times in the last 15 minutes.
+
+        - alert: JobFailed
+          expr: |
+            kube_job_failed > 0
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: >-
+              Job has failed.
+            description: >-
+              Job {{ $labels.namespace }}/{{ $labels.job_name }}
+              has failed.
+
+        - alert: ImagePullBackOff
+          expr: |
+            kube_pod_container_status_waiting_reason{reason="ImagePullBackOff"} == 1
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: >-
+              Pod cannot pull container image.
+            description: >-
+              Pod {{ $labels.namespace }}/{{ $labels.pod }}
+              container {{ $labels.container }} is in ImagePullBackOff.

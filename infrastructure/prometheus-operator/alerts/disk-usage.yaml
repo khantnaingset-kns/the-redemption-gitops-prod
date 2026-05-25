@@ -1,0 +1,107 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: disk-usage-alerts
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+    - name: disk-usage
+      rules:
+        - alert: HighNodeDiskUsage
+          expr: |
+            (1
+              -
+            (node_filesystem_avail_bytes{
+              fstype=~"ext[234]|xfs|btrfs"
+            }
+              /
+            node_filesystem_size_bytes{
+              fstype=~"ext[234]|xfs|btrfs"
+            }))
+            * 100
+            > 80
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: >-
+              High node disk usage.
+            description: >-
+              Node {{ $labels.instance }} filesystem {{ $labels.mountpoint }}
+              is {{ $value | printf "%.0f" }}% full.
+
+        - alert: CriticalNodeDiskUsage
+          expr: |
+            (1
+              -
+            (node_filesystem_avail_bytes{
+              fstype=~"ext[234]|xfs|btrfs"
+            }
+              /
+            node_filesystem_size_bytes{
+              fstype=~"ext[234]|xfs|btrfs"
+            }))
+            * 100
+            > 90
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: >-
+              Critical node disk usage.
+            description: >-
+              Node {{ $labels.instance }} filesystem {{ $labels.mountpoint }}
+              is {{ $value | printf "%.0f" }}% full.
+
+        - alert: DiskSpacePredictedToFill
+          expr: |
+            predict_linear(
+              node_filesystem_avail_bytes{
+                fstype=~"ext[234]|xfs|btrfs"
+              }[6h],
+              4 * 3600
+            ) < 0
+          for: 1h
+          labels:
+            severity: warning
+          annotations:
+            summary: >-
+              Disk predicted to fill within 4 hours.
+            description: >-
+              Node {{ $labels.instance }} filesystem {{ $labels.mountpoint }}
+              is predicted to run out of space within the next 4 hours,
+              based on the last 6 hours of usage.
+
+        - alert: NodeDiskReadOnly
+          expr: |
+            node_filesystem_readonly{
+              fstype=~"ext[234]|xfs|btrfs"
+            } == 1
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: >-
+              Node filesystem is read-only.
+            description: >-
+              Node {{ $labels.instance }} filesystem {{ $labels.mountpoint }}
+              has become read-only.
+
+        - alert: KubeletTooManyPods
+          expr: |
+            count by(node) (
+              kube_pod_info
+            ) / on(node)
+            count by(node) (
+              kube_node_status_capacity{resource="pods"}
+            ) > 0.9
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: >-
+              Node nearing pod capacity.
+            description: >-
+              Node {{ $labels.node }} is using
+              {{ $value | humanizePercentage }} of its pod capacity.

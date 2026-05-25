@@ -1,0 +1,9 @@
+apiVersion: elbv2.k8s.aws/v1beta1
+kind: TargetGroupBinding
+metadata:
+  name: alb-tg-binding-prod
+spec:
+  serviceRef:
+    name: cilium-ingress
+    port: 80
+  targetGroupARN: arn:aws:elasticloadbalancing:ap-southeast-7:759713896789:targetgroup/wave-ir-ingress-tg/1e80b680c09c6a07

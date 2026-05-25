@@ -20,6 +20,10 @@ spec:
         valueFiles:
           - $argocd_values/infrastructure/prometheus-operator/values.yaml
 
+    - repoURL: https://github.com/khantnaingset-kns/the-redemption-gitops-prod.git
+      targetRevision: main
+      path: infrastructure/prometheus-operator/alerts
+
   destination:
     namespace: o11y
     name: in-cluster

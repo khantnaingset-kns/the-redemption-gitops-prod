@@ -18,6 +18,10 @@ spec:
         valueFiles:
           - $argocd_values/infrastructure/aws-alb-controller/values.yaml
 
+    - repoURL: https://github.com/khantnaingset-kns/the-redemption-gitops-prod.git
+      targetRevision: main
+      path: infrastructure/aws-alb-controller/manifests
+
   destination:
     namespace: kube-system
     name: in-cluster

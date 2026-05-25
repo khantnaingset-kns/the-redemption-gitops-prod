@@ -1,0 +1,83 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: cpu-usage-alerts
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+    - name: cpu-usage
+      rules:
+        - alert: HighNodeCpuUsage
+          expr: |
+            100
+              -
+            (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)
+            > 80
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: >-
+              High node CPU usage.
+            description: >-
+              Node {{ $labels.instance }} CPU usage is
+              {{ $value | printf "%.0f" }}% for over 15 minutes.
+
+        - alert: CriticalNodeCpuUsage
+          expr: |
+            100
+              -
+            (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)
+            > 90
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: >-
+              Critical node CPU usage.
+            description: >-
+              Node {{ $labels.instance }} CPU usage is
+              {{ $value | printf "%.0f" }}% for over 5 minutes.
+
+        - alert: HighContainerCpuUsage
+          expr: |
+            sum by(container, pod, namespace) (
+              rate(container_cpu_usage_seconds_total{
+                container!="",
+                container!="POD",
+                image!=""
+              }[5m])
+            )
+              /
+            sum by(container, pod, namespace) (
+              kube_pod_container_resource_limits{resource="cpu"}
+            )
+            > 0.8
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: >-
+              High container CPU usage.
+            description: >-
+              Container {{ $labels.namespace }}/{{ $labels.pod }}/{{ $labels.container }}
+              CPU usage is {{ $value | humanizePercentage }} of limit.
+
+        - alert: ContainerCpuThrottlingHigh
+          expr: |
+            sum by(container, pod, namespace) (
+              rate(container_cpu_cfs_throttled_seconds_total{
+                container!="",
+                container!="POD"
+              }[5m])
+            ) > 0.5
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: >-
+              Container CPU is being throttled.
+            description: >-
+              Container {{ $labels.namespace }}/{{ $labels.pod }}/{{ $labels.container }}
+              is experiencing high CPU throttling.

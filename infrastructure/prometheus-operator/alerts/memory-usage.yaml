@@ -1,0 +1,95 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: memory-usage-alerts
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+    - name: memory-usage
+      rules:
+        - alert: HighNodeMemoryUsage
+          expr: |
+            (1
+              -
+            (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes))
+            * 100
+            > 80
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: >-
+              High node memory usage.
+            description: >-
+              Node {{ $labels.instance }} memory usage is
+              {{ $value | printf "%.0f" }}% for over 15 minutes.
+
+        - alert: CriticalNodeMemoryUsage
+          expr: |
+            (1
+              -
+            (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes))
+            * 100
+            > 90
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: >-
+              Critical node memory usage.
+            description: >-
+              Node {{ $labels.instance }} memory usage is
+              {{ $value | printf "%.0f" }}% for over 5 minutes.
+
+        - alert: NodeMemoryPressure
+          expr: |
+            kube_node_status_condition{
+              condition="MemoryPressure",
+              status="true"
+            } == 1
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: >-
+              Node is under memory pressure.
+            description: >-
+              Node {{ $labels.node }} has reported MemoryPressure condition.
+
+        - alert: HighContainerMemoryUsage
+          expr: |
+            sum by(container, pod, namespace) (
+              container_memory_working_set_bytes{
+                container!="",
+                container!="POD",
+                image!=""
+              }
+            )
+              /
+            sum by(container, pod, namespace) (
+              kube_pod_container_resource_limits{resource="memory"}
+            )
+            > 0.8
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: >-
+              High container memory usage.
+            description: >-
+              Container {{ $labels.namespace }}/{{ $labels.pod }}/{{ $labels.container }}
+              memory usage is {{ $value | humanizePercentage }} of limit.
+
+        - alert: ContainerOomKilled
+          expr: |
+            kube_pod_container_status_last_terminated_reason{reason="OOMKilled"} > 0
+          labels:
+            severity: critical
+          annotations:
+            summary: >-
+              Container was OOMKilled.
+            description: >-
+              Container {{ $labels.namespace }}/{{ $labels.pod }}/{{ $labels.container }}
+              was terminated with OOMKilled.
+              Memory limits may be too low.
