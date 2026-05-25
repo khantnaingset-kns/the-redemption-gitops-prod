@@ -27,6 +27,33 @@ prometheus:
         operator: "Equal"
         value: "true"
         effect: "NoExecute"
+      - key: workload-tier
+        value: general-purpose
+        effect: NoSchedule
+
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - topologyKey: topology.kubernetes.io/zone
+            labelSelector:
+              matchLabels:
+                app.kubernetes.io/name: prometheus
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: workload-tier
+                  operator: In
+                  values:
+                    - general-purpose
+
+    topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: topology.kubernetes.io/zone
+        whenUnsatisfiable: DoNotSchedule
+        labelSelector:
+          matchLabels:
+            app.kubernetes.io/name: prometheus
 
     serviceMonitorNamespaceSelector: {}
 
@@ -154,6 +181,19 @@ alertmanager:
           - severity
 
   alertmanagerSpec:
+    tolerations:
+      - key: workload-tier
+        value: general-purpose
+        effect: NoSchedule
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: workload-tier
+                  operator: In
+                  values:
+                    - general-purpose
     volumes:
       - name: smtp-secret
         secret:
@@ -167,6 +207,21 @@ alertmanager:
       - name: smtp-secret
         mountPath: /etc/alertmanager-secrets
         readOnly: true
+
+prometheusOperator:
+  tolerations:
+    - key: workload-tier
+      value: general-purpose
+      effect: NoSchedule
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: workload-tier
+                operator: In
+                values:
+                  - general-purpose
 
 rbac:
   create: true
@@ -188,11 +243,28 @@ rbac:
 
 kubeStateMetrics:
   enabled: true
+  tolerations:
+    - key: workload-tier
+      value: general-purpose
+      effect: NoSchedule
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: workload-tier
+                operator: In
+                values:
+                  - general-purpose
   serviceMonitor:
     enabled: true
 
 prometheus-node-exporter:
   enabled: true
+  tolerations:
+    - key: workload-tier
+      operator: Exists
+      effect: NoSchedule
   podLabels:
     app.kubernetes.io/name: prometheus-node-exporter
     app.kubernetes.io/part-of: prometheus-node-exporter
@@ -247,6 +319,21 @@ serviceMonitor:
 grafana:
   enabled: true
   replicas: 1
+
+  tolerations:
+    - key: workload-tier
+      value: general-purpose
+      effect: NoSchedule
+
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: workload-tier
+                operator: In
+                values:
+                  - general-purpose
 
   adminPassword: ""
 

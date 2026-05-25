@@ -81,6 +81,19 @@ gateway:
       drop:
         - ALL
     allowPrivilegeEscalation: false
+  tolerations:
+    - key: workload-tier
+      value: general-purpose
+      effect: NoSchedule
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: workload-tier
+                operator: In
+                values:
+                  - general-purpose
 
 podSecurityContext:
   runAsNonRoot: true
@@ -154,6 +167,19 @@ ingester:
     limits:
       cpu: 500m
       memory: 512Mi
+  tolerations:
+    - key: workload-tier
+      value: general-purpose
+      effect: NoSchedule
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: workload-tier
+                operator: In
+                values:
+                  - general-purpose
   zoneAwareReplication:
     enabled: false
   extraArgs:
@@ -174,6 +200,19 @@ querier:
     limits:
       cpu: 500m
       memory: 512Mi
+  tolerations:
+    - key: workload-tier
+      value: general-purpose
+      effect: NoSchedule
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: workload-tier
+                operator: In
+                values:
+                  - general-purpose
   extraArgs:
     - -config.expand-env=true
   extraEnv:
@@ -192,6 +231,19 @@ queryFrontend:
     limits:
       cpu: 200m
       memory: 256Mi
+  tolerations:
+    - key: workload-tier
+      value: general-purpose
+      effect: NoSchedule
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: workload-tier
+                operator: In
+                values:
+                  - general-purpose
   extraArgs:
     - -config.expand-env=true
   extraEnv:
@@ -209,6 +261,19 @@ queryScheduler:
     limits:
       cpu: 200m
       memory: 256Mi
+  tolerations:
+    - key: workload-tier
+      value: general-purpose
+      effect: NoSchedule
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: workload-tier
+                operator: In
+                values:
+                  - general-purpose
   extraArgs:
     - -config.expand-env=true
   extraEnv:
@@ -227,6 +292,19 @@ distributor:
     limits:
       cpu: 500m
       memory: 512Mi
+  tolerations:
+    - key: workload-tier
+      value: general-purpose
+      effect: NoSchedule
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: workload-tier
+                operator: In
+                values:
+                  - general-purpose
   extraArgs:
     - -config.expand-env=true
   extraEnv:
@@ -244,6 +322,19 @@ compactor:
     limits:
       cpu: 500m
       memory: 512Mi
+  tolerations:
+    - key: workload-tier
+      value: general-purpose
+      effect: NoSchedule
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: workload-tier
+                operator: In
+                values:
+                  - general-purpose
   extraArgs:
     - -config.expand-env=true
   extraEnv:
@@ -262,6 +353,19 @@ indexGateway:
     limits:
       cpu: 500m
       memory: 512Mi
+  tolerations:
+    - key: workload-tier
+      value: general-purpose
+      effect: NoSchedule
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: workload-tier
+                operator: In
+                values:
+                  - general-purpose
   extraArgs:
     - -config.expand-env=true
   extraEnv:

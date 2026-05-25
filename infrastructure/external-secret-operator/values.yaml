@@ -25,6 +25,21 @@ securityContext:
   allowPrivilegeEscalation: false
   readOnlyRootFilesystem: true
 
+tolerations:
+  - key: workload-tier
+    value: general-purpose
+    effect: NoSchedule
+
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: workload-tier
+              operator: In
+              values:
+                - general-purpose
+
 serviceAccount:
   create: true
   name: external-secrets-sa

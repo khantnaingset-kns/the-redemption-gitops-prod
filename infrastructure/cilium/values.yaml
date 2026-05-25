@@ -16,6 +16,11 @@ resources:
     cpu: 500m
     memory: 1Gi
 
+tolerations:
+  - key: workload-tier
+    operator: Exists
+    effect: NoSchedule
+
 envoy:
   enabled: true
   resources:
@@ -31,6 +36,10 @@ envoy:
     capabilities:
       drop:
         - ALL
+  tolerations:
+    - key: workload-tier
+      operator: Exists
+      effect: NoSchedule
   affinity:
     podAntiAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
@@ -75,6 +84,19 @@ hubble:
       capabilities:
         drop:
           - ALL
+    tolerations:
+      - key: workload-tier
+        value: general-purpose
+        effect: NoSchedule
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: workload-tier
+                  operator: In
+                  values:
+                    - general-purpose
   ui:
     enabled: true
     resources:
@@ -90,6 +112,19 @@ hubble:
       capabilities:
         drop:
           - ALL
+    tolerations:
+      - key: workload-tier
+        value: general-purpose
+        effect: NoSchedule
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: workload-tier
+                  operator: In
+                  values:
+                    - general-purpose
 
 operator:
   unmanagedPodWatcher:
@@ -107,6 +142,19 @@ operator:
     capabilities:
       drop:
         - ALL
+  tolerations:
+    - key: workload-tier
+      value: general-purpose
+      effect: NoSchedule
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: workload-tier
+                operator: In
+                values:
+                  - general-purpose
 
 affinity:
   podAntiAffinity:

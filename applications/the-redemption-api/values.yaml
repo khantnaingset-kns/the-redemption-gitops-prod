@@ -105,7 +105,7 @@ dbMigration:
 hpa:
   enabled: true
   minReplicas: 2
-  maxReplicas: 6
+  maxReplicas: 20
   targetCPUUtilizationPercentage: 70
   targetMemoryUtilizationPercentage: null
   behavior: {}
@@ -125,6 +125,39 @@ serviceMonitor:
 nodeSelector:
   workload-tier: api
 
-tolerations: []
-affinity: {}
-topologySpreadConstraints: []
+tolerations:
+  - key: workload-tier
+    value: api
+    effect: NoSchedule
+
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: workload-tier
+              operator: In
+              values:
+                - api
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          topologyKey: kubernetes.io/hostname
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: the-redemption-api
+
+topologySpreadConstraints:
+  - maxSkew: 2
+    topologyKey: topology.kubernetes.io/zone
+    whenUnsatisfiable: ScheduleAnyway
+    labelSelector:
+      matchLabels:
+        app.kubernetes.io/name: the-redemption-api
+  - maxSkew: 2
+    topologyKey: kubernetes.io/hostname
+    whenUnsatisfiable: ScheduleAnyway
+    labelSelector:
+      matchLabels:
+        app.kubernetes.io/name: the-redemption-api

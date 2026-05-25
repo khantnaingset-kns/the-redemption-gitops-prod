@@ -7,6 +7,19 @@ admissionController:
     limits:
       cpu: 500m
       memory: 512Mi
+  tolerations:
+    - key: workload-tier
+      value: general-purpose
+      effect: NoSchedule
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: workload-tier
+                operator: In
+                values:
+                  - general-purpose
   container:
     securityContext:
       runAsNonRoot: true
@@ -27,6 +40,19 @@ backgroundController:
     limits:
       cpu: 200m
       memory: 256Mi
+  tolerations:
+    - key: workload-tier
+      value: general-purpose
+      effect: NoSchedule
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: workload-tier
+                operator: In
+                values:
+                  - general-purpose
   container:
     securityContext:
       runAsNonRoot: true
@@ -47,6 +73,19 @@ cleanupController:
     limits:
       cpu: 200m
       memory: 256Mi
+  tolerations:
+    - key: workload-tier
+      value: general-purpose
+      effect: NoSchedule
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: workload-tier
+                operator: In
+                values:
+                  - general-purpose
   container:
     securityContext:
       runAsNonRoot: true
@@ -67,6 +106,19 @@ reportsController:
     limits:
       cpu: 200m
       memory: 256Mi
+  tolerations:
+    - key: workload-tier
+      value: general-purpose
+      effect: NoSchedule
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: workload-tier
+                operator: In
+                values:
+                  - general-purpose
   container:
     securityContext:
       runAsNonRoot: true

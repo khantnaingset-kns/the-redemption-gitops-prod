@@ -60,8 +60,14 @@ nodePools:
             - m7i.xlarge
             - m7a.large
             - m7a.xlarge
-      taints: []
-      startupTaints: []
+      taints:
+        - key: workload-tier
+          value: general-purpose
+          effect: NoSchedule
+      startupTaints:
+        - key: workload-tier
+          value: general-purpose
+          effect: NoSchedule
       limits:
         cpu: "500"
         memory: 1000Gi
@@ -101,8 +107,14 @@ nodePools:
             - c7i.xlarge
             - c7a.large
             - c7a.xlarge
-      taints: []
-      startupTaints: []
+      taints:
+        - key: workload-tier
+          value: api
+          effect: NoSchedule
+      startupTaints:
+        - key: workload-tier
+          value: api
+          effect: NoSchedule
       limits:
         cpu: "200"
         memory: 500Gi
