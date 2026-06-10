@@ -39,6 +39,8 @@ spec:
     repoURL: https://github.com/khantnaingset-kns/the-redemption-gitops-prod.git
     targetRevision: main
     path: argocd
+    directory:
+      recurse: true
 
   destination:
     server: https://kubernetes.default.svc
