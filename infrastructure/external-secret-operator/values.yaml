@@ -47,6 +47,7 @@ serviceAccount:
     eks.amazonaws.com/role-arn: arn:aws:iam::837411785224:role/external-secrets-operator-role
 
 webhook:
+  failurePolicy: Ignore
   port: 9443
   certManager:
     enabled: false

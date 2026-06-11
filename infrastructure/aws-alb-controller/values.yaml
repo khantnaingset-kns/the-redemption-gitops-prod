@@ -48,4 +48,4 @@ serviceAccount:
   create: true
   name: aws-load-balancer-controller-sa
   annotations:
-    eks.amazonaws.com/role-arn: "arn:aws:iam::837411785224:role/alb-controller-irsa-20260525071350952400000001"
+    eks.amazonaws.com/role-arn: "arn:aws:iam::837411785224:role/alb-controller-irsa-2026061102032669450000001a"

@@ -19,6 +19,10 @@ spec:
         valueFiles:
           - $argocd_values/applications/the-redemption-api/values.yaml
 
+    - repoURL: https://github.com/khantnaingset-kns/the-redemption-gitops-prod.git
+      targetRevision: main
+      path: applications/the-redemption-api/manifests
+
   destination:
     namespace: the-redemption
     name: in-cluster
