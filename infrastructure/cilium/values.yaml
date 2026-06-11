@@ -64,6 +64,7 @@ ingressController:
   service:
     name: cilium-ingress
     type: ClusterIP
+    externalTrafficPolicy: null
 
 endpointRoutes:
   enabled: true

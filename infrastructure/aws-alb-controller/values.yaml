@@ -4,6 +4,9 @@ autoDiscoverAwsVpcID: true
 image:
   tag: v2.12.0
 
+hostNetwork: true
+dnsPolicy: ClusterFirstWithHostNet
+
 resources:
   requests:
     cpu: 100m

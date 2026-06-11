@@ -28,6 +28,12 @@ spec:
               selector:
                 matchLabels:
                   app.kubernetes.io/part-of: cilium
+          - resources:
+              namespaces:
+                - kube-system
+              selector:
+                matchLabels:
+                  app.kubernetes.io/name: aws-load-balancer-controller
       validate:
         message: "Use of hostNetwork is not allowed."
         pattern:
@@ -47,6 +53,12 @@ spec:
               selector:
                 matchLabels:
                   app.kubernetes.io/part-of: cilium
+          - resources:
+              namespaces:
+                - kube-system
+              selector:
+                matchLabels:
+                  app.kubernetes.io/name: aws-load-balancer-controller
       validate:
         message: "Use of hostPID is not allowed."
         pattern:
@@ -66,6 +78,12 @@ spec:
               selector:
                 matchLabels:
                   app.kubernetes.io/part-of: cilium
+          - resources:
+              namespaces:
+                - kube-system
+              selector:
+                matchLabels:
+                  app.kubernetes.io/name: aws-load-balancer-controller
       validate:
         message: "Use of hostIPC is not allowed."
         pattern:
