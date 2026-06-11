@@ -9,6 +9,13 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
+command:
+  - node
+args:
+  - -e
+  - >-
+    require('http').createServer((req,res)=>{res.writeHead(200,{'content-type':'application/json'});res.end(JSON.stringify({status:'ok',service:'the-redemption-api',path:req.url}));}).listen(process.env.PORT||3000,'0.0.0.0')
+
 serviceAccount:
   create: true
   annotations: {}
@@ -31,9 +38,26 @@ securityContext:
       - ALL
 
 service:
-  type: ClusterIP
+  type: NodePort
   port: 80
   targetPort: 3000
+
+ingress:
+  enabled: true
+  className: alb
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: instance
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
+    alb.ingress.kubernetes.io/healthcheck-path: /healthz
+    alb.ingress.kubernetes.io/success-codes: "200"
+  hosts:
+    - host: ""
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
 
 config:
   PORT: "3000"
