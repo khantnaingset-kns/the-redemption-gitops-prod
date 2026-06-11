@@ -259,7 +259,7 @@ rbac:
       verbs: ["get"]
 
 kubeStateMetrics:
-  enabled: true
+  enabled: false
   tolerations:
     - key: workload-tier
       value: general-purpose

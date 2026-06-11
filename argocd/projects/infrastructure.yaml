@@ -17,6 +17,7 @@ spec:
     - ghcr.io/kube-logging/helm-charts
     - https://grafana.github.io/helm-charts
     - https://helm.cilium.io/
+    - https://kubernetes-sigs.github.io/metrics-server/
   destinations:
     - namespace: aws-observability
       server: https://kubernetes.default.svc
