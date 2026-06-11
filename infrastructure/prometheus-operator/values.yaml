@@ -353,7 +353,7 @@ grafana:
                 values:
                   - general-purpose
 
-  adminPassword: ""
+  adminPassword: "admin"
 
   resources:
     requests:
