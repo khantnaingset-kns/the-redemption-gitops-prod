@@ -6,4 +6,4 @@ spec:
   serviceRef:
     name: cilium-ingress
     port: 80
-  targetGroupARN: arn:aws:elasticloadbalancing:ap-southeast-7:759713896789:targetgroup/wave-ir-ingress-tg/1e80b680c09c6a07
+  targetGroupARN: arn:aws:elasticloadbalancing:us-east-1:837411785224:targetgroup/the-redemption-alb-tg/05b51b5ecf5eba7b

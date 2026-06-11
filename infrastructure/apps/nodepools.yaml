@@ -4,7 +4,7 @@ metadata:
   name: nodepools
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "-130"
+    argocd.argoproj.io/sync-wave: "-170"
 spec:
   project: infrastructure
   sources:

@@ -4,7 +4,7 @@ metadata:
   name: cilium
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "-150"
+    argocd.argoproj.io/sync-wave: "-200"
 spec:
   project: infrastructure
   sources:
@@ -20,6 +20,12 @@ spec:
   destination:
     namespace: kube-system
     name: in-cluster
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
   # https://docs.cilium.io/en/latest/configuration/argocd-issues/#solution
   ignoreDifferences:
     - kind: ConfigMap
