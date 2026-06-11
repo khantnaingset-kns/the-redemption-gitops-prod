@@ -136,12 +136,6 @@ operator:
     limits:
       cpu: 200m
       memory: 256Mi
-  securityContext:
-    runAsNonRoot: true
-    runAsUser: 1000
-    capabilities:
-      drop:
-        - ALL
   tolerations:
     - key: workload-tier
       value: general-purpose

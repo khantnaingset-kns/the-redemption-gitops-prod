@@ -20,6 +20,14 @@ spec:
           - resources:
               kinds:
                 - Pod
+      exclude:
+        any:
+          - resources:
+              namespaces:
+                - kube-system
+              selector:
+                matchLabels:
+                  app.kubernetes.io/part-of: cilium
       validate:
         message: "Use of hostNetwork is not allowed."
         pattern:
@@ -31,6 +39,14 @@ spec:
           - resources:
               kinds:
                 - Pod
+      exclude:
+        any:
+          - resources:
+              namespaces:
+                - kube-system
+              selector:
+                matchLabels:
+                  app.kubernetes.io/part-of: cilium
       validate:
         message: "Use of hostPID is not allowed."
         pattern:
@@ -42,6 +58,14 @@ spec:
           - resources:
               kinds:
                 - Pod
+      exclude:
+        any:
+          - resources:
+              namespaces:
+                - kube-system
+              selector:
+                matchLabels:
+                  app.kubernetes.io/part-of: cilium
       validate:
         message: "Use of hostIPC is not allowed."
         pattern:

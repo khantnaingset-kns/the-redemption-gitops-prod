@@ -20,6 +20,14 @@ spec:
           - resources:
               kinds:
                 - Pod
+      exclude:
+        any:
+          - resources:
+              namespaces:
+                - kube-system
+              selector:
+                matchLabels:
+                  app.kubernetes.io/part-of: cilium
       validate:
         message: "Privileged containers are not allowed."
         pattern:
