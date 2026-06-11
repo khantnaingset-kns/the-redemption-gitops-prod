@@ -10,7 +10,6 @@ spec:
   sources:
     - repoURL: https://github.com/khantnaingset-kns/the-redemption-gitops-prod.git
       targetRevision: main
-      path: infrastructure/prometheus-operator
       ref: argocd_values
 
     - repoURL: https://prometheus-community.github.io/helm-charts

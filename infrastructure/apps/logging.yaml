@@ -20,16 +20,13 @@ spec:
       targetRevision: 5.2.0
       helm:
         valueFiles:
-          - $argocd_values/infrastructure/logging/values.yml
+          - $argocd_values/infrastructure/logging/values.yaml
     - chart: loki
       repoURL: https://grafana.github.io/helm-charts
       targetRevision: 6.29.0
       helm:
         valueFiles:
-          - $argocd_values/infrastructure/logging/values.yml
-    - repoURL: "https://github.com/khantnaingset-kns/the-redemption-gitops-prod.git"
-      targetRevision: main
-      path: infrastructure/logging/manifests
+          - $argocd_values/infrastructure/logging/values.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: o11y

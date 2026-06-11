@@ -4,10 +4,11 @@ ec2NodeClasses:
     - name: default
       labels: {}
       annotations: {}
-      role: ""
+      role: prod-the-redemption-karpenter-node-role
       instanceProfile: ""
       amiFamily: AL2023
-      amiSelectorTerms: []
+      amiSelectorTerms:
+        - alias: al2023@latest
       subnetSelectorTerms:
         - tags:
             karpenter.sh/discovery: prod-the-redemption
@@ -56,18 +57,14 @@ nodePools:
         - key: node.kubernetes.io/instance-type
           operator: In
           values:
-            - m7i.large
-            - m7i.xlarge
-            - m7a.large
-            - m7a.xlarge
+            - t3.large
+            - t3.xlarge
+            - t3.2xlarge
       taints:
         - key: workload-tier
           value: general-purpose
           effect: NoSchedule
-      startupTaints:
-        - key: workload-tier
-          value: general-purpose
-          effect: NoSchedule
+      startupTaints: []
       limits:
         cpu: "500"
         memory: 1000Gi
@@ -103,18 +100,14 @@ nodePools:
         - key: node.kubernetes.io/instance-type
           operator: In
           values:
-            - c7i.large
-            - c7i.xlarge
-            - c7a.large
-            - c7a.xlarge
+            - t3.large
+            - t3.xlarge
+            - t3.2xlarge
       taints:
         - key: workload-tier
           value: api
           effect: NoSchedule
-      startupTaints:
-        - key: workload-tier
-          value: api
-          effect: NoSchedule
+      startupTaints: []
       limits:
         cpu: "200"
         memory: 500Gi

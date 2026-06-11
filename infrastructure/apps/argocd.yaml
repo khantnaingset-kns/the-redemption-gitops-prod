@@ -1,8 +1,10 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: fargate-log
+  name: argocd
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-160"
 spec:
   project: infrastructure
   sources:
@@ -10,15 +12,15 @@ spec:
       targetRevision: main
       ref: argocd_values
 
-    - repoURL: https://github.com/khantnaingset-kns/the-redemption-helm-charts
-      targetRevision: main
-      path: fargate-log
+    - repoURL: https://argoproj.github.io/argo-helm
+      chart: argo-cd
+      targetRevision: 7.8.26
       helm:
         valueFiles:
-          - $argocd_values/infrastructure/fargate-log/values.yaml
+          - $argocd_values/infrastructure/argocd/values.yaml
 
   destination:
-    namespace: aws-observability
+    namespace: argocd
     name: in-cluster
   syncPolicy:
     automated:
@@ -26,3 +28,4 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+      - ServerSideApply=true

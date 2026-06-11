@@ -8,7 +8,6 @@ spec:
   sources:
     - repoURL: https://github.com/khantnaingset-kns/the-redemption-gitops-prod.git
       targetRevision: main
-      path: infrastructure/aws-alb-controller
       ref: argocd_values
 
     - repoURL: https://aws.github.io/eks-charts

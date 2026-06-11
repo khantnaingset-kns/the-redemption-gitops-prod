@@ -17,14 +17,139 @@ spec:
     - ghcr.io/kube-logging/helm-charts
     - https://grafana.github.io/helm-charts
     - https://helm.cilium.io/
+    - https://argoproj.github.io/argo-helm
   destinations:
-    - namespace: "*"
+    - namespace: argocd
       server: https://kubernetes.default.svc
-    - namespace: "*"
+    - namespace: aws-observability
+      server: https://kubernetes.default.svc
+    - namespace: kube-system
+      server: https://kubernetes.default.svc
+    - namespace: kyverno
+      server: https://kubernetes.default.svc
+    - namespace: o11y
+      server: https://kubernetes.default.svc
+    - namespace: utilities
+      server: https://kubernetes.default.svc
+    - namespace: argocd
+      name: in-cluster
+    - namespace: aws-observability
+      name: in-cluster
+    - namespace: kube-system
+      name: in-cluster
+    - namespace: kyverno
+      name: in-cluster
+    - namespace: o11y
+      name: in-cluster
+    - namespace: utilities
       name: in-cluster
   clusterResourceWhitelist:
-    - group: "*"
-      kind: "*"
+    - group: ""
+      kind: Namespace
+    - group: admissionregistration.k8s.io
+      kind: MutatingWebhookConfiguration
+    - group: admissionregistration.k8s.io
+      kind: ValidatingWebhookConfiguration
+    - group: apiextensions.k8s.io
+      kind: CustomResourceDefinition
+    - group: apiregistration.k8s.io
+      kind: APIService
+    - group: cilium.io
+      kind: CiliumClusterwideNetworkPolicy
+    - group: elbv2.k8s.aws
+      kind: IngressClassParams
+    - group: external-secrets.io
+      kind: ClusterExternalSecret
+    - group: external-secrets.io
+      kind: ClusterSecretStore
+    - group: karpenter.k8s.aws
+      kind: EC2NodeClass
+    - group: karpenter.sh
+      kind: NodePool
+    - group: kyverno.io
+      kind: ClusterPolicy
+    - group: logging.banzaicloud.io
+      kind: ClusterFlow
+    - group: logging.banzaicloud.io
+      kind: ClusterOutput
+    - group: networking.k8s.io
+      kind: IngressClass
+    - group: rbac.authorization.k8s.io
+      kind: ClusterRole
+    - group: rbac.authorization.k8s.io
+      kind: ClusterRoleBinding
+    - group: scheduling.k8s.io
+      kind: PriorityClass
+    - group: storage.k8s.io
+      kind: CSIDriver
   namespaceResourceWhitelist:
-    - group: "*"
-      kind: "*"
+    - group: ""
+      kind: ConfigMap
+    - group: ""
+      kind: Endpoints
+    - group: ""
+      kind: PersistentVolumeClaim
+    - group: ""
+      kind: Pod
+    - group: ""
+      kind: Secret
+    - group: ""
+      kind: Service
+    - group: ""
+      kind: ServiceAccount
+    - group: apps
+      kind: DaemonSet
+    - group: apps
+      kind: Deployment
+    - group: apps
+      kind: StatefulSet
+    - group: autoscaling
+      kind: HorizontalPodAutoscaler
+    - group: batch
+      kind: CronJob
+    - group: batch
+      kind: Job
+    - group: cilium.io
+      kind: CiliumNetworkPolicy
+    - group: cert-manager.io
+      kind: Certificate
+    - group: cert-manager.io
+      kind: Issuer
+    - group: elbv2.k8s.aws
+      kind: TargetGroupBinding
+    - group: external-secrets.io
+      kind: ExternalSecret
+    - group: external-secrets.io
+      kind: SecretStore
+    - group: logging.banzaicloud.io
+      kind: Flow
+    - group: logging.banzaicloud.io
+      kind: Logging
+    - group: logging.banzaicloud.io
+      kind: Output
+    - group: monitoring.coreos.com
+      kind: Alertmanager
+    - group: monitoring.coreos.com
+      kind: PodMonitor
+    - group: monitoring.coreos.com
+      kind: Probe
+    - group: monitoring.coreos.com
+      kind: Prometheus
+    - group: monitoring.coreos.com
+      kind: PrometheusRule
+    - group: monitoring.coreos.com
+      kind: ServiceMonitor
+    - group: monitoring.coreos.com
+      kind: ScrapeConfig
+    - group: monitoring.coreos.com
+      kind: ThanosRuler
+    - group: networking.k8s.io
+      kind: Ingress
+    - group: networking.k8s.io
+      kind: NetworkPolicy
+    - group: policy
+      kind: PodDisruptionBudget
+    - group: rbac.authorization.k8s.io
+      kind: Role
+    - group: rbac.authorization.k8s.io
+      kind: RoleBinding

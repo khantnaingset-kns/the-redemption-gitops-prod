@@ -10,7 +10,6 @@ spec:
   sources:
     - repoURL: https://github.com/khantnaingset-kns/the-redemption-gitops-prod.git
       targetRevision: main
-      path: infrastructure/cilium
       ref: argocd_values
     - repoURL: https://helm.cilium.io/
       chart: cilium

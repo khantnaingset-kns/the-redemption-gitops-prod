@@ -1,0 +1,146 @@
+crds:
+  install: true
+  keep: true
+
+global:
+  domain: argocd.prod-the-redemption.local
+  tolerations:
+    - key: workload-tier
+      value: general-purpose
+      effect: NoSchedule
+  affinity:
+    podAntiAffinity: soft
+    nodeAffinity:
+      type: hard
+      matchExpressions:
+        - key: workload-tier
+          operator: In
+          values:
+            - general-purpose
+
+configs:
+  params:
+    server.insecure: true
+
+controller:
+  replicas: 1
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+  tolerations:
+    - key: workload-tier
+      value: general-purpose
+      effect: NoSchedule
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: workload-tier
+                operator: In
+                values:
+                  - general-purpose
+
+server:
+  replicas: 2
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  service:
+    type: ClusterIP
+  tolerations:
+    - key: workload-tier
+      value: general-purpose
+      effect: NoSchedule
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: workload-tier
+                operator: In
+                values:
+                  - general-purpose
+
+repoServer:
+  replicas: 2
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 1Gi
+  tolerations:
+    - key: workload-tier
+      value: general-purpose
+      effect: NoSchedule
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: workload-tier
+                operator: In
+                values:
+                  - general-purpose
+
+applicationSet:
+  replicas: 2
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  tolerations:
+    - key: workload-tier
+      value: general-purpose
+      effect: NoSchedule
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: workload-tier
+                operator: In
+                values:
+                  - general-purpose
+
+redis:
+  enabled: true
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  tolerations:
+    - key: workload-tier
+      value: general-purpose
+      effect: NoSchedule
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: workload-tier
+                operator: In
+                values:
+                  - general-purpose
+
+dex:
+  enabled: false
+
+notifications:
+  enabled: false

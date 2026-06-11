@@ -8,7 +8,6 @@ spec:
   sources:
     - repoURL: https://github.com/khantnaingset-kns/the-redemption-gitops-prod.git
       targetRevision: main
-      path: applications/the-redemption-api
       ref: argocd_values
 
     - repoURL: https://github.com/khantnaingset-kns/the-redemption-helm-charts
