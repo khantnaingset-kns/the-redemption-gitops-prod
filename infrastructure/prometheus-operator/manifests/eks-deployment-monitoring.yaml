@@ -21,7 +21,7 @@ data:
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "Prometheus",
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
           "fill": 1,
           "fillGradient": 0,
           "gridPos": {
@@ -104,7 +104,7 @@ data:
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "Prometheus",
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
           "fill": 1,
           "fillGradient": 0,
           "gridPos": {

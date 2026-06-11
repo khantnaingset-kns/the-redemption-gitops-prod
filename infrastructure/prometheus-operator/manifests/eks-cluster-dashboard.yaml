@@ -65,7 +65,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "Prometheus"
+            "uid": "prometheus"
           },
           "description": "",
           "fieldConfig": {
@@ -134,7 +134,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "Prometheus"
+                "uid": "prometheus"
               },
               "editorMode": "code",
               "exemplar": false,
@@ -153,7 +153,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "Prometheus"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -221,7 +221,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "Prometheus"
+                "uid": "prometheus"
               },
               "editorMode": "code",
               "exemplar": false,
@@ -240,7 +240,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "Prometheus"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -308,7 +308,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "Prometheus"
+                "uid": "prometheus"
               },
               "exemplar": false,
               "expr": "sum(kube_pod_container_resource_requests{resource=\"memory\", node=~\"$node\"}) / sum(kube_node_status_allocatable{resource=\"memory\", node=~\"$node\"}) * 100",
@@ -325,7 +325,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "Prometheus"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -393,7 +393,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "Prometheus"
+                "uid": "prometheus"
               },
               "exemplar": true,
               "expr": "(sum(node_filesystem_size_bytes{node=~\".*\"}) - sum(node_filesystem_free_bytes{node=~\".*\"})) / sum(node_filesystem_size_bytes{node=~\".*\"}) * 100",
@@ -410,7 +410,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "Prometheus"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -488,7 +488,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "Prometheus"
+                "uid": "prometheus"
               },
               "exemplar": true,
               "expr": "sum(kube_node_status_allocatable{resource=\"pods\", node=~\"$node\"})",
@@ -501,7 +501,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "Prometheus"
+                "uid": "prometheus"
               },
               "exemplar": true,
               "expr": "sum(kube_node_status_capacity{resource=\"pods\", node=~\"$node\"})",
@@ -514,7 +514,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "Prometheus"
+                "uid": "prometheus"
               },
               "exemplar": true,
               "expr": "sum(kube_pod_info{node=~\"$node\"})",
@@ -531,7 +531,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "Prometheus"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -609,7 +609,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "Prometheus"
+                "uid": "prometheus"
               },
               "exemplar": true,
               "expr": "sum(kube_node_status_capacity{resource=\"cpu\", node=~\"$node\"})",
@@ -622,7 +622,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "Prometheus"
+                "uid": "prometheus"
               },
               "exemplar": true,
               "expr": "sum(kube_node_status_allocatable{resource=\"cpu\", node=~\"$node\"})",
@@ -635,7 +635,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "Prometheus"
+                "uid": "prometheus"
               },
               "exemplar": true,
               "expr": "sum(kube_pod_container_resource_requests{resource=\"cpu\", node=~\"$node\"})",
@@ -652,7 +652,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "Prometheus"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -730,7 +730,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "Prometheus"
+                "uid": "prometheus"
               },
               "exemplar": true,
               "expr": "sum(kube_node_status_allocatable{resource=\"memory\", node=~\"$node\"})",
@@ -743,7 +743,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "Prometheus"
+                "uid": "prometheus"
               },
               "exemplar": true,
               "expr": "sum(kube_node_status_capacity{resource=\"memory\", node=~\"$node\"})",
@@ -756,7 +756,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "Prometheus"
+                "uid": "prometheus"
               },
               "exemplar": true,
               "expr": "sum(kube_pod_container_resource_requests{resource=\"memory\", node=~\"$node\"})",
@@ -773,7 +773,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "Prometheus"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -851,7 +851,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "Prometheus"
+                "uid": "prometheus"
               },
               "exemplar": true,
               "expr": "sum(node_filesystem_size_bytes{node=~\"$node\", device=~\"/dev/.*\"}) - sum(node_filesystem_free_bytes{node=~\"$node\", device=~\"/dev/.*\"})",
@@ -864,7 +864,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "Prometheus"
+                "uid": "prometheus"
               },
               "exemplar": true,
               "expr": "sum(node_filesystem_size_bytes)",
@@ -894,7 +894,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "Prometheus"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -973,7 +973,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "Prometheus"
+                "uid": "prometheus"
               },
               "exemplar": false,
               "expr": "kube_deployment_status_replicas{namespace=~\".*\"}",
@@ -999,7 +999,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "Prometheus"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -1063,7 +1063,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "Prometheus"
+                "uid": "prometheus"
               },
               "exemplar": true,
               "expr": "sum(kube_deployment_status_replicas{namespace=~\".*\"})",
@@ -1080,7 +1080,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "Prometheus"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -1144,7 +1144,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "Prometheus"
+                "uid": "prometheus"
               },
               "exemplar": true,
               "expr": "sum(kube_deployment_status_replicas_updated{namespace=~\".*\"})",
@@ -1161,7 +1161,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "Prometheus"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -1225,7 +1225,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "Prometheus"
+                "uid": "prometheus"
               },
               "exemplar": true,
               "expr": "sum(kube_deployment_status_replicas_unavailable{namespace=~\".*\"})",
@@ -1255,7 +1255,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "Prometheus"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -1336,7 +1336,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "Prometheus"
+                "uid": "prometheus"
               },
               "exemplar": true,
               "expr": "rate(container_cpu_usage_seconds_total{container!=\"\"}[5m]) * 100",
@@ -1366,7 +1366,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "Prometheus"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -1447,7 +1447,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "Prometheus"
+                "uid": "prometheus"
               },
               "exemplar": true,
               "expr": "sum by(pod) (container_memory_working_set_bytes{container!=\"\"})",
@@ -1477,7 +1477,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "Prometheus"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -1541,7 +1541,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "Prometheus"
+                "uid": "prometheus"
               },
               "exemplar": true,
               "expr": "sum(kube_node_info{node=~\"$node\"})",
@@ -1558,7 +1558,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "Prometheus"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -1626,7 +1626,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "Prometheus"
+                "uid": "prometheus"
               },
               "exemplar": true,
               "expr": "sum(kube_node_status_condition{condition=\"DiskPressure\", node=~\"$node\", status=\"true\"})",
@@ -1643,7 +1643,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "Prometheus"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -1711,7 +1711,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "Prometheus"
+                "uid": "prometheus"
               },
               "exemplar": true,
               "expr": "sum(kube_node_spec_unschedulable{node=~\"$node\"})",
