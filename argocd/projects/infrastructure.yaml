@@ -17,11 +17,10 @@ spec:
     - ghcr.io/kube-logging/helm-charts
     - https://grafana.github.io/helm-charts
     - https://helm.cilium.io/
-    - https://argoproj.github.io/argo-helm
   destinations:
-    - namespace: argocd
-      server: https://kubernetes.default.svc
     - namespace: aws-observability
+      server: https://kubernetes.default.svc
+    - namespace: cilium-secrets
       server: https://kubernetes.default.svc
     - namespace: kube-system
       server: https://kubernetes.default.svc
@@ -31,9 +30,9 @@ spec:
       server: https://kubernetes.default.svc
     - namespace: utilities
       server: https://kubernetes.default.svc
-    - namespace: argocd
-      name: in-cluster
     - namespace: aws-observability
+      name: in-cluster
+    - namespace: cilium-secrets
       name: in-cluster
     - namespace: kube-system
       name: in-cluster
