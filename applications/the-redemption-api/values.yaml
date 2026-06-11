@@ -62,8 +62,8 @@ externalSecret:
   data:
     - secretKey: DB_PASSWORD
       remoteRef:
-        key: password
-        property: DB_PASSWORD
+        key: rds!db-843090ee-190a-47a3-b399-87c746774d83
+        property: password
   dataFrom: []
 
 probes:
