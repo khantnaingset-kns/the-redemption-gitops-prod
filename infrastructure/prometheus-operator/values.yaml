@@ -222,6 +222,23 @@ prometheusOperator:
                 operator: In
                 values:
                   - general-purpose
+  admissionWebhooks:
+    enabled: false
+    patch:
+      enabled: false
+      tolerations:
+        - key: workload-tier
+          value: general-purpose
+          effect: NoSchedule
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: workload-tier
+                    operator: In
+                    values:
+                      - general-purpose
 
 rbac:
   create: true

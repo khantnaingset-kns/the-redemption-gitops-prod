@@ -24,6 +24,20 @@ policies:
           - ports:
               - port: "443"
 
+  - name: allow-hubble-relay-to-peer
+    description: "Allow Hubble Relay to reach Cilium agents for peer discovery"
+    endpointSelector:
+      matchLabels:
+        app.kubernetes.io/name: hubble-relay
+    egress:
+      - toEntities:
+          - host
+          - remote-node
+        toPorts:
+          - ports:
+              - port: "4244"
+                protocol: TCP
+
   - name: allow-world-egress
     description: "Allow all pods egress to the internet"
     endpointSelector: {}

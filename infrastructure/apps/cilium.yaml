@@ -53,3 +53,9 @@ spec:
       name: cilium-config
       jsonPointers:
         - /data/ipam-multi-pool-pre-allocation
+    - kind: Deployment
+      name: hubble-ui
+      jsonPointers:
+        - /spec/template/spec/affinity/nodeAffinity
+        - /spec/template/spec/tolerations
+        - /spec/template/spec/securityContext

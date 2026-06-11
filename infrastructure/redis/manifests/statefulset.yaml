@@ -64,7 +64,12 @@ spec:
       labels:
         app: redis
     spec:
+      hostNetwork: false
+      hostPID: false
+      hostIPC: false
       securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
         fsGroup: 1000
       tolerations:
         - key: workload-tier
@@ -140,6 +145,7 @@ spec:
         labels:
           app: redis
       spec:
+        storageClassName: gp3
         accessModes:
           - ReadWriteOnce
         resources:

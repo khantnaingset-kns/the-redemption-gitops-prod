@@ -57,7 +57,7 @@ externalSecret:
     name: the-redemption-secrets
     kind: ClusterSecretStore
   target:
-    name: "rds!db-3aced137-9445-4dcf-931a-5fad9c27a5d5"
+    name: "rds-db-3aced137-9445-4dcf-931a-5fad9c27a5d5"
     creationPolicy: Owner
   data:
     - secretKey: DB_PASSWORD

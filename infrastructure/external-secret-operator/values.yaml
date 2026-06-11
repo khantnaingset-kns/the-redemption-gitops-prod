@@ -49,7 +49,20 @@ serviceAccount:
 webhook:
   port: 9443
   certManager:
-    enabled: true
+    enabled: false
+  tolerations:
+    - key: workload-tier
+      value: general-purpose
+      effect: NoSchedule
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: workload-tier
+                operator: In
+                values:
+                  - general-purpose
   resources:
     requests:
       cpu: 50m
@@ -59,6 +72,19 @@ webhook:
       memory: 128Mi
 
 certController:
+  tolerations:
+    - key: workload-tier
+      value: general-purpose
+      effect: NoSchedule
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: workload-tier
+                operator: In
+                values:
+                  - general-purpose
   resources:
     requests:
       cpu: 50m

@@ -109,9 +109,6 @@ hubble:
     securityContext:
       runAsNonRoot: true
       runAsUser: 1000
-      capabilities:
-        drop:
-          - ALL
     tolerations:
       - key: workload-tier
         value: general-purpose
