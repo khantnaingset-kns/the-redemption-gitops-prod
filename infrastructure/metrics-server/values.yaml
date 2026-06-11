@@ -14,7 +14,9 @@ affinity:
                 - general-purpose
 
 hostNetwork:
-  enabled: false
+  enabled: true
+
+containerPort: 4443
 
 resources:
   requests:

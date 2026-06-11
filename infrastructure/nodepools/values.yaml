@@ -88,7 +88,7 @@ nodePools:
         - key: kubernetes.io/arch
           operator: In
           values:
-            - amd64
+            - arm64
         - key: kubernetes.io/os
           operator: In
           values:
@@ -100,9 +100,9 @@ nodePools:
         - key: node.kubernetes.io/instance-type
           operator: In
           values:
-            - t3.large
-            - t3.xlarge
-            - t3.2xlarge
+            - t4g.large
+            - t4g.xlarge
+            - t4g.2xlarge
       taints:
         - key: workload-tier
           value: api

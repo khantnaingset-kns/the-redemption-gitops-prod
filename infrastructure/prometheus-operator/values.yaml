@@ -223,9 +223,10 @@ prometheusOperator:
                 values:
                   - general-purpose
   admissionWebhooks:
-    enabled: false
+    enabled: true
+    failurePolicy: Ignore
     patch:
-      enabled: false
+      enabled: true
       tolerations:
         - key: workload-tier
           value: general-purpose

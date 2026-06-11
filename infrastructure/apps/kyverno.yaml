@@ -19,10 +19,6 @@ spec:
         valueFiles:
           - $argocd_values/infrastructure/kyverno/values.yaml
 
-    - repoURL: https://github.com/khantnaingset-kns/the-redemption-gitops-prod.git
-      targetRevision: main
-      path: infrastructure/kyverno/manifests
-
   destination:
     namespace: kyverno
     name: in-cluster

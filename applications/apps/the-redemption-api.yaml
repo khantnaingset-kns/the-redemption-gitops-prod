@@ -28,3 +28,11 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+  ignoreDifferences:
+    - group: apps
+      kind: Deployment
+      name: the-redemption-api
+      namespace: the-redemption
+      jsonPointers:
+        - /spec/template/spec/containers/0/command
+        - /spec/template/spec/containers/0/args
