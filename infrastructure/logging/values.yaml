@@ -21,7 +21,7 @@ loki:
       active_index_directory: /var/loki/tsdb/index
       cache_location: /var/loki//tsdb/index_cache
     aws:
-      s3: ""
+      s3: s3://us-east-1/837411785224-useast1-the-redemption-eks-logs
   compactor:
     working_directory: /var/loki/compactor
     compaction_interval: 10m
@@ -40,12 +40,12 @@ loki:
     per_stream_rate_limit_burst: 2000MB
   storage:
     bucketNames:
-      chunks: ""
-      ruler: ""
-      admin: ""
+      chunks: 837411785224-useast1-the-redemption-eks-logs
+      ruler: 837411785224-useast1-the-redemption-eks-logs
+      admin: 837411785224-useast1-the-redemption-eks-logs
     type: s3
     s3:
-      s3: ""
+      s3: s3://us-east-1/837411785224-useast1-the-redemption-eks-logs
       region: us-east-1
       insecure: false
       endpoint: null
@@ -99,6 +99,29 @@ podSecurityContext:
   runAsNonRoot: true
   runAsUser: 1000
   fsGroup: 1000
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 128Mi
+  limits:
+    cpu: 200m
+    memory: 256Mi
+
+tolerations:
+  - key: workload-tier
+    value: general-purpose
+    effect: NoSchedule
+
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: workload-tier
+              operator: In
+              values:
+                - general-purpose
 
 deploymentMode: Distributed
 
@@ -378,11 +401,37 @@ memcached:
   enabled: false
 chunksCache:
   allocatedMemory: 1000
+  tolerations:
+    - key: workload-tier
+      value: general-purpose
+      effect: NoSchedule
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: workload-tier
+                operator: In
+                values:
+                  - general-purpose
 resultsCache:
   allocatedMemory: 1000
+  tolerations:
+    - key: workload-tier
+      value: general-purpose
+      effect: NoSchedule
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: workload-tier
+                operator: In
+                values:
+                  - general-purpose
 
 serviceAccount:
   create: true
   annotations:
-    eks.amazonaws.com/role-arn: ""
+    eks.amazonaws.com/role-arn: arn:aws:iam::837411785224:role/loki-s3-irsa-20260611020326692300000019
   name: loki-sa
